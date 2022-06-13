@@ -22,9 +22,35 @@ class Player {
     }
 }
 
+class Projectile {
+    constructor(x, y, radius, color, velocity) {
+        this.x = x
+        this.y = x
+        this.radius = radius
+        this.color = color
+        this.velocity = velocity
+    }
+    //when clock on the screen shoot projectile 
+    draw() {
+        c.beginPath()
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        c.fillStyle = this.color
+        c.fill()
+
+    }
+}
+
+// ball is in the middle 
 const x = canvas.width / 2
 const y = canvas.height / 2
 
 const player = new Player(x, y, 30, 'blue')
+
 player.draw()
-console.log(player)
+
+//after clicking do action, this event knows exactly when my mouse was 
+addEventListener('click', (event) =>{
+    const projectile = new Projectile(event.clientX, event.clientY, 5, 'blue', null
+    )
+    projectile.draw()
+})
