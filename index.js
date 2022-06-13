@@ -25,7 +25,7 @@ class Player {
 class Projectile {
     constructor(x, y, radius, color, velocity) {
         this.x = x
-        this.y = x
+        this.y = y
         this.radius = radius
         this.color = color
         this.velocity = velocity
@@ -49,8 +49,9 @@ const player = new Player(x, y, 30, 'blue')
 player.draw()
 
 //after clicking do action, this event knows exactly when my mouse was 
-addEventListener('click', (event) =>{
-    const projectile = new Projectile(event.clientX, event.clientY, 5, 'blue', null
+addEventListener('click', (event) =>
+     {
+    const projectile = new Projectile(event.clientX, event.clientY, 5, 'red', null
     )
     projectile.draw()
 })
