@@ -44,32 +44,80 @@ class Projectile {
     }
 }
 
+//in case we have multiple instances we want to create new class
+//enemy is something which goes from outside of the screen in the middle 
+class Enemy {
+    constructor(x, y, radius, color, velocity) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.color = color
+        this.velocity = velocity
+    }
+    //when clock on the screen shoot projectile 
+    draw() {
+        c.beginPath()
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        c.fillStyle = this.color
+        c.fill()
+    }
+    update() {
+        this.draw()
+        this.x = this.x + this.velocity.x
+        this.y = this.y + this.velocity.y
+    }
+}
+
 // ball is in the middle 
 const x = canvas.width / 2
 const y = canvas.height / 2
 
 const player = new Player(x, y, 30, 'blue')
 
-player.draw()
-
-
 const projectiles = []
+const enemies = []
+
+
+function spawnEnemies() {
+    setInterval(() => {
+        const radius = 30
+        const x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius
+        const y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
+        const color = 'green'
+        const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x) // core for shooting balls
+        const velocity = {
+        x: Math.cos(angle), y: Math.sin(angle)
+    }
+        enemies.push(new Enemy(x, y, radius, color, velocity))
+        console.log(enemies)
+    }, 1000)
+}
+
 
 function animate() {
     requestAnimationFrame(animate)
+    c.clearRect(0, 0, canvas.width, canvas.height) //shooting balls
+    player.draw()
     projectiles.forEach(projectile => {
         projectile.update()
+    }) 
+    enemies.forEach(enemy => { // call enemies
+        enemy.update()
     })
 }
 
 //after clicking do action, this event knows exactly when my mouse was 
 addEventListener('click', (event) =>
      {
-    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'red', {
-        x: 1, y: 1
-         })
+    const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2) // core for shooting balls
+    const velocity = {
+        x: Math.cos(angle), y: Math.sin(angle)
+    }
+    console.log(angle);
+    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'orange', velocity)
     )
 })
 
 
 animate()
+spawnEnemies()
