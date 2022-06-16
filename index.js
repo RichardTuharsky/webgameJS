@@ -1,5 +1,4 @@
 const canvas = document.querySelector('canvas');
-
 const c = canvas.getContext('2d')
 
 canvas.width = innerWidth
@@ -98,10 +97,10 @@ function spawnEnemies() {
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x) // core for shooting balls
 
         const velocity = {
-        x: Math.cos(angle) * 3, y: Math.sin(angle) * 3 // rychlost enemies
+        x: Math.cos(angle) * 2, y: Math.sin(angle) * 2 // rychlost enemies
     }
         enemies.push(new Enemy(x, y, radius, color, velocity))
-        console.log(enemies)
+        //console.log(enemies)
     }, 1000)
 }
 
@@ -130,13 +129,22 @@ function animate() {
 
         projectiles.forEach((projectile, projectileIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)// vzdialenost medzi dvoma objektami
-            //ked trafim objekt
+            //ked projektil trafi enemy
             if(dist - enemy.radius - projectile.radius < 1) {
-                //ked trafim objekt a zmizne nepreblikne obrazovka vdaka tomuto
-                setTimeout(() => {
-                    enemies.splice(index, 1)
-                    projectiles.splice(projectileIndex, 1)
-                }, 0)
+
+                if(enemy.radius  - 10 > 6) {
+                    gsap.to(enemy, {
+                        radius: enemy.radius - 10
+                    })
+                    setTimeout(() => {
+                        projectiles.splice(projectileIndex, 1)
+                    }, 0)
+                }else {
+                    setTimeout(() => {
+                        enemies.splice(index, 1)
+                        projectiles.splice(projectileIndex, 1)
+                    }, 0)
+                }
             }
         });
     })
@@ -149,7 +157,7 @@ addEventListener('click', (event) =>
     const velocity = {
         x: Math.cos(angle) * 6, y: Math.sin(angle) * 6 // rychlost projektilu
     }
-    console.log(angle);
+    //console.log(angle);
     projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'white', velocity)
     )
 })
