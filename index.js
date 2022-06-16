@@ -72,7 +72,7 @@ class Enemy {
 const x = canvas.width / 2
 const y = canvas.height / 2
 
-const player = new Player(x, y, 30, 'blue')
+const player = new Player(x, y, 15, 'white')
 
 const projectiles = []
 const enemies = []
@@ -93,12 +93,12 @@ function spawnEnemies() {
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
         }
 
-        const color = 'purple'
+        const color = `hsl(${Math.random() * 360}, 50%, 50%)` // generovnaie random farieb pre enemy gulicky
 
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x) // core for shooting balls
 
         const velocity = {
-        x: Math.cos(angle), y: Math.sin(angle)
+        x: Math.cos(angle) * 3, y: Math.sin(angle) * 3 // rychlost enemies
     }
         enemies.push(new Enemy(x, y, radius, color, velocity))
         console.log(enemies)
@@ -108,7 +108,8 @@ function spawnEnemies() {
 let animationId
 function animate() {
    animationId = requestAnimationFrame(animate)
-    c.clearRect(0, 0, canvas.width, canvas.height) //shooting balls
+   c.fillStyle = 'rgba(0, 0, 0, 0.1)' //tiene za prijektilmi a nepriatelmi
+    c.fillRect(0, 0, canvas.width, canvas.height) //shooting balls
     player.draw()
     projectiles.forEach((projectile, index) => {
         projectile.update()
@@ -146,10 +147,10 @@ addEventListener('click', (event) =>
      {
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2) // core for shooting balls
     const velocity = {
-        x: Math.cos(angle), y: Math.sin(angle)
+        x: Math.cos(angle) * 6, y: Math.sin(angle) * 6 // rychlost projektilu
     }
     console.log(angle);
-    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'black', velocity)
+    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'white', velocity)
     )
 })
 
