@@ -133,7 +133,7 @@ function animate() {
             if(dist - enemy.radius - projectile.radius < 1) {
 
                 if(enemy.radius  - 10 > 6) {
-                    gsap.to(enemy, {
+                    gsap.to(enemy, { //gsap greensock kniznica pre animacie, ked projektil trafi enemy 
                         radius: enemy.radius - 10
                     })
                     setTimeout(() => {
