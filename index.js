@@ -93,7 +93,7 @@ function spawnEnemies() {
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
         }
 
-        const color = 'green'
+        const color = 'purple'
 
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x) // core for shooting balls
 
@@ -105,16 +105,33 @@ function spawnEnemies() {
     }, 1000)
 }
 
-
+let animationId
 function animate() {
-    requestAnimationFrame(animate)
+   animationId = requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height) //shooting balls
     player.draw()
     projectiles.forEach(projectile => {
         projectile.update()
     }) 
-    enemies.forEach(enemy => { // call enemies
+    enemies.forEach((enemy, index) => { // call enemies
         enemy.update()
+
+        const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
+        if(dist - enemy.radius - player.radius < 0.2) { 
+            cancelAnimationFrame(animationId) // ked sa nas dotkne projektil hra skoncila
+        }
+
+        projectiles.forEach((projectile, projectileIndex) => {
+            const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)// vzdialenost medzi dvoma objektami
+            //ked trafim objekt
+            if(dist - enemy.radius - projectile.radius < 1) {
+                //ked trafim objekt a zmizne nepreblikne obrazovka vdaka tomuto
+                setTimeout(() => {
+                    enemies.splice(index, 1)
+                    projectiles.splice(projectileIndex, 1)
+                }, 0)
+            }
+        });
     })
 }
 
@@ -126,7 +143,7 @@ addEventListener('click', (event) =>
         x: Math.cos(angle), y: Math.sin(angle)
     }
     console.log(angle);
-    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'orange', velocity)
+    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'black', velocity)
     )
 })
 
