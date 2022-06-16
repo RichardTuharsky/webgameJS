@@ -80,11 +80,23 @@ const enemies = []
 
 function spawnEnemies() {
     setInterval(() => {
-        const radius = 30
-        const x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius
-        const y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
+        //velkost gulicky
+        const radius = Math.random() * (30 - 7) + 7 //aby sme dostali velkost medzi 4 - 30, 4 je a menej je velmi malo
+        let x 
+        let y
+        //spawn guliciek, 50/50 sanca z ktorej strany pojdu
+        if(Math.random() < 0.5) {
+             x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius
+             y = Math.random() * canvas.height
+        } else {
+            x = Math.random() * canvas.width
+            y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
+        }
+
         const color = 'green'
+
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x) // core for shooting balls
+
         const velocity = {
         x: Math.cos(angle), y: Math.sin(angle)
     }
