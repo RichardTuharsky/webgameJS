@@ -4,6 +4,8 @@ const c = canvas.getContext('2d')
 canvas.width = innerWidth
 canvas.height = innerHeight
 
+const scoreEl = document.querySelector('#scoreEl')
+
 class Player {
     constructor(x, y, radius, color) {
         this.x = x
@@ -17,7 +19,6 @@ class Player {
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
         c.fillStyle = this.color
         c.fill()
-
     }
 }
 
@@ -66,7 +67,8 @@ class Enemy {
         this.y = this.y + this.velocity.y
     }
 }
-
+ // treba fixnut 1:20 
+ const friction = 0.99 //spomalenie guliciek po vybuchu
 class Particle {
     constructor(x, y, radius, color, velocity) {
         this.x = x
@@ -74,18 +76,24 @@ class Particle {
         this.radius = radius
         this.color = color
         this.velocity = velocity
+        this.alpha = 1
     }
-    //when clock on the screen shoot projectile 
     draw() {
+        c.save()
+        c.globalAlpha = this.alpha  
         c.beginPath()
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
         c.fillStyle = this.color
         c.fill()
+        c.restore()
     }
     update() {
         this.draw()
+        this.velocity.x *= friction//spomalenie guliciek po vybuchu
+        this.velocity.y *= friction//spomalenie guliciek po vybuchu
         this.x = this.x + this.velocity.x
         this.y = this.y + this.velocity.y
+        this.aplha -= 0.01
     }
 }
 
@@ -99,7 +107,7 @@ const projectiles = []
 
 const enemies = []
 
-const particles = []
+const particles = [] // treba fixnut
 
 
 function spawnEnemies() {
@@ -130,14 +138,20 @@ function spawnEnemies() {
 }
 
 let animationId
+let score = 0
 function animate() {
    animationId = requestAnimationFrame(animate)
    c.fillStyle = 'rgba(0, 0, 0, 0.1)' //tiene za prijektilmi a nepriatelmi
     c.fillRect(0, 0, canvas.width, canvas.height) //shooting balls
     player.draw()
-    particles.forEach(particle => {
-        particle.update()
+    particles.forEach((particle, index) => {
+        if(particle.alpha <= 0) {
+            particles.splice(index, 1)
+        } else {
+            particle.update()
+        }
     });
+
     projectiles.forEach((projectile, index) => {
         projectile.update()
         //zmazanie projektilov z rohov a okrajov
@@ -159,11 +173,17 @@ function animate() {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)// vzdialenost medzi dvoma objektami
             //ked projektil trafi enemy
             if(dist - enemy.radius - projectile.radius < 1) {
-                for(let i = 0; i < 8; i++) {
-                    particles.push(new Particle(projectile.x, projectile.y, 3, enemy.color, {x: Math.random() - 0.5, y: Math.random - 0.5}))
-                    console.log(particles)
+               
+                //vytvorenie vybuchu
+                for(let i = 0; i < enemy.radius * 2; i++) {
+                     // treba fixnut, 1:20 
+                    particles.push(new Particle(projectile.x, projectile.y, Math.random() * 2, enemy.color, {x: (Math.random() - 0.5) * (Math.random() * 8) , y: (Math.random - 0.5) * (Math.random() * 8)}))
                 }
-                if(enemy.radius  - 10 > 6) {
+
+                if(enemy.radius  - 10 > 5) {
+                     //zvysenie score
+                    score += 10
+                    scoreEl.innerHTML = score
                     gsap.to(enemy, { //gsap greensock kniznica pre animacie, ked projektil trafi enemy 
                         radius: enemy.radius - 10
                     })
@@ -171,6 +191,9 @@ function animate() {
                         projectiles.splice(projectileIndex, 1)
                     }, 0)
                 }else {
+                     //zvysenie score
+                    score += 25
+                    scoreEl.innerHTML = score
                     setTimeout(() => {
                         enemies.splice(index, 1)
                         projectiles.splice(projectileIndex, 1)
