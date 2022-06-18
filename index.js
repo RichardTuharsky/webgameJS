@@ -167,7 +167,8 @@ function animate() {
         enemy.update()
 
         const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
-        if(dist - enemy.radius - player.radius < 0.2) { 
+
+        if(dist - enemy.radius - player.radius < 1) { 
             cancelAnimationFrame(animationId) // ked sa nas dotkne projektil hra skoncila
         }
 
@@ -217,7 +218,7 @@ addEventListener('click', (event) =>
     projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'white', velocity)
     )
 })
-
+//start button
 startGameBtn.addEventListener('click', () => {
     animate()
     spawnEnemies()
